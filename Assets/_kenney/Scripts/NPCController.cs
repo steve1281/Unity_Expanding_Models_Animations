@@ -6,6 +6,9 @@ public class NPCController : MonoBehaviour
     public Animator animator;
     public AnimationState initialState = AnimationState.Idle;
 
+    public GameObject pickAxe;
+    public GameObject basket;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -25,6 +28,7 @@ public class NPCController : MonoBehaviour
                 animator.SetBool("isJumping", true);
                 break;
             case AnimationState.Mining: 
+                if (pickAxe) pickAxe.SetActive(true);
                 animator.SetBool("isMining", true);
                 break;
 
@@ -32,10 +36,13 @@ public class NPCController : MonoBehaviour
                 animator.SetBool("isSpellCast", true);
                 break;
             case AnimationState.Gathering: 
+                if (basket) basket.SetActive(true);
                 animator.SetBool("isGathering", true);
                 break;
 
             default:
+                if (pickAxe) pickAxe.SetActive(false);
+                if (basket) basket.SetActive(false);
                 animator.SetBool("isMoving", false);
                 animator.SetBool("isJumping", false);
                 animator.SetBool("isMining", false); 

@@ -377,3 +377,71 @@ public class NPCController : MonoBehaviour
 - you can add most animations this way
 - you can also mess around with intermediate steps, timeing, etc
 - you need to call SetState to change state
+
+
+# Adding a pickaxe
+## Create pickaxe prefab
+- drag Pickaxe on H
+    - you will need to find or build one
+- drag Skins, Pickaxe_smoothnessMetalic into S onto PickAxe
+    - from my borrowed pick axe
+- drag H, Pickaxe into P, Assets, _kenney, Prefabs, Misc
+    - this creates a pickaxe prefab we can use
+- delete H, Pickaxe
+
+## Put pickaxe into a character
+- on a new scene, or remove stuff from existing
+- drag P, Assets,\_kenney, Prefabs, LargeFemale, BaseLargeModelFemale.prefab onto scene
+- H, BaseLargeModelFemale, Root, HipsCtrl, Hips, Spine, Chest, UpperChest, RightShoulder, RightArm, RightForeArm, RightHand; drag P, Assets, \_kenney, Prefabs, Misc, Pickaxe
+    - Position: 0.00154 0.00142 -0.00077
+    - Rotation: -166.79 -90 85.243 
+    - Scale: 0.5 0.5 0.5
+    - deactivate [ ]
+
+## Script
+- we only want the pickaxe visible when we mining
+- add a Gameobject for the pickaxe
+<pre style="background-color: #1a1a1a; color: #ffffff; padding:15px; margin:5px">
+...
+    public GameObject pickAxe; // <-- here
+...
+    public void SetState(AnimationState state)
+    {
+...
+            case AnimationState.Mining: 
+                if (pickAxe) pickAxe.SetActive(true); // <-- here
+                animator.SetBool("isMining", true);
+                break;
+...
+            default:
+                if (pickAxe) pickAxe.SetActive(false); // <-- here
+...
+</pre>
+- note: we don't propagation (`pickAxe?.SetActive(true)`) because unity doesn't like that :-(
+- save, unity
+- drag Pickaxe into H, BaseLargeFemaleModel, Pick Axe
+- set Initial State to Mining
+- run, observe pickaxe
+- if you run again in a a different state (moving for example) there will be no pickaxe
+- H, BaseLargeFemaleModel; I, Overrides, Apply All
+- delete H, BaseLargeFemaleModel
+- drag P, Assets, _kenney, Prefabs, LargeFemale, CyborgFemaleLarge Variant into H
+    - Initial State: Mining
+- run, observe mining
+- stop
+   - Initial State: Moving
+- run, observe running, no mining
+
+## Practice, add a basket to BaseLargeModelMale
+- try to replicate, using a basket model, Gathering
+    - Position: -0.0002 0.0051 0.0023
+    - Rotation: 85.383 141.952 303.69
+    - Scale: 0.75 0.75 0.75
+- something like this:
+<img src="040-Mining_and_Gathering.gif" width="400">
+- maybe with a better basket, lol
+
+## Notes
+- this can/will grown into a mess of if statements
+- we should consider creating a family of "states", assigning via the case, and then invoking their behaviours
+- let me get back to this later
